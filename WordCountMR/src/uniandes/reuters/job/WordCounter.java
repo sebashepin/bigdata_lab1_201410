@@ -27,7 +27,7 @@ public class WordCounter {
     public static void main(String[] args) {
         int modo = -1;
         if (args.length < 2) {
-            System.out.println("Se necesitan las carpetas de entrada y salida y el modo de ejecución");
+            System.out.println("Se necesita las carpetas de entrada y salida y el modo de ejecución");
             System.exit(-1);
         }
 
@@ -60,10 +60,6 @@ public class WordCounter {
      * @modo Para señalizar cuál de los puntos del taller se quiere ejecutar
      */
     public static void ejecutarJob(String entrada, String salida, int modo) throws IOException, ClassNotFoundException, InterruptedException {
-        /**
-         * Objeto de configuración, dependiendo de la versión de Hadoop uno u
-         * otro es requerido.
-         * */
         Configuration conf = new Configuration();
         JobConf conf2 = new JobConf();
         conf2.setJarByClass(WordCounter.class);

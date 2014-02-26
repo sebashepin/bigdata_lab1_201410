@@ -15,11 +15,13 @@ public class WCMapperTituloYNoticiaConMasPalabras extends
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         HashMap<String, Integer> palabrasLinea = new HashMap<String, Integer>();
         String linea = value.toString();
-        // Solo corre si la línea tiene un tag 'title'
+        //TODO Solo corre si la línea tiene un tag '<title>'
         if (linea.toLowerCase().contains("<title>")) {
+            
+            //TODO Se "limpia" la línea de tags para que solo se almacene el título
             linea = linea.replace("<title>", "");
             linea = linea.replace("</title>", "");
-            String[] palabras = linea.split("([().,!?:;'\"-]|\\s)+");
+            String[] palabras = linea.split("([().,!?:'\"-]|\\s)+");
             palabrasLinea.put(linea, palabras.length);
         }
 

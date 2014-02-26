@@ -14,22 +14,17 @@ public class WCMapperContarNoticias extends
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         HashMap<String, Integer> palabrasLinea = new HashMap<String, Integer>();
-        String[] palabras = value.toString().split("([().,!?:;'\"-]|\\s)+");
-        for (String palabra : palabras) {
-            String lw = palabra.toLowerCase().trim();
-            if (lw.equals("")) {
-                continue;
-            } // No queremos contar espacios
-              // Si la palabra existe en el hashmap incrementa en 1 su valor,
-              // en caso contrario la agrega y le asigna 1.
+        String linea = value.toString();
 
-            // Para el conteo de noticias, si no es una noticia, no tenga en
-            // cuenta la línea
-            if (!lw.startsWith("<title>")) {
-                continue;
-            }
-            palabrasLinea.put("NOTICIAS", palabrasLinea.containsKey("NOTICIAS") ? (palabrasLinea.get(lw) + 1) : 1);
+        // TODO Solo corre si la línea tiene un tag '<title'>
+        // Si encuentra una lína con ése tag, le suma uno al contador de
+        // noticias
+        if (linea.toLowerCase().contains("<title>")) {
+            palabrasLinea.put("NOTICIAS", palabrasLinea.containsKey("NOTICIAS") ? (palabrasLinea.get("NOTICIAS") + 1) : 1);
         }
+
+        // Se dejó la construcción del iterador ya que ayuda a contemplar el
+        // caso de un hashmap vacío
         for (String k : palabrasLinea.keySet()) {
             context.write(new Text(k), new IntWritable(palabrasLinea.get(k)));
         }

@@ -13,7 +13,7 @@ public class WCMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         HashMap<String, Integer> palabrasLinea = new HashMap<String, Integer>();
-        String[] palabras = value.toString().split("([().,!?:;'\"-]|\\s)+");
+        String[] palabras = value.toString().split("([().,!?:'\"-]|\\s)+");
         for (String palabra : palabras) {
             String lw = palabra.toLowerCase().trim();
             if (lw.equals("")) {

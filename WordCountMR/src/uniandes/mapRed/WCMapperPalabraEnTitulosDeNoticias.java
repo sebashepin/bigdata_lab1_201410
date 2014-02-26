@@ -16,17 +16,26 @@ public class WCMapperPalabraEnTitulosDeNoticias extends
         HashMap<String, Integer> palabrasLinea = new HashMap<String, Integer>();
         String linea = value.toString();
 
-        // Solo corre si la línea tiene un tag 'title'
+        // TODO Solo corre si la línea tiene un tag '<title>'
+        // Ya que se quiere contar palabras en título, el resto del código se
+        // deja intacto
         if (linea.toLowerCase().contains("<title>")) {
-            String[] palabras = linea.split("([().,!?:;'\"-]|\\s)+");
+
+            // TODO Se "limpia" la línea de tags que pudieran ser contados como
+            // palabras
+            linea = linea.replace("<title>", "");
+            linea = linea.replace("</title>", "");
+
+            String[] palabras = linea.split("([().,!?:'\"-]|\\s)+");
             for (String palabra : palabras) {
                 String lw = palabra.toLowerCase().trim();
                 if (lw.equals("")) {
                     continue;
-                } // No queremos contar espacios
-                  // Si la palabra existe en el hashmap incrementa en 1 su
-                  // valor,
-                  // en caso contrario la agrega y le asigna 1.
+                }
+                // No queremos contar espacios
+                // Si la palabra existe en el hashmap incrementa en 1 su
+                // valor,
+                // en caso contrario la agrega y le asigna 1.
                 palabrasLinea.put(lw, palabrasLinea.containsKey(lw) ? (palabrasLinea.get(lw) + 1) : 1);
             }
         }
