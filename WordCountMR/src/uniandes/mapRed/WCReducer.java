@@ -9,12 +9,19 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class WCReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-        int tot = 0;
-        for (IntWritable iw : values) {
-            tot += iw.get();
+        String noticiaMayor = "";
+        int masPalabras = 0;
+    	
+    	for (IntWritable iw : values) {
+    		if (iw.get() > masPalabras)
+    		{
+    			noticiaMayor = key.toString();
+    			masPalabras = iw.get();
+    		}
+        	context.write(key, new IntWritable(iw.get()));
         }
-        context.write(key, new IntWritable(tot));
-
+        
+    	context.write(new Text(noticiaMayor), new IntWritable(masPalabras));
     }
 
 }

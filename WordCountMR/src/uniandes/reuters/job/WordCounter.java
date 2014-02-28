@@ -11,9 +11,11 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import uniandes.inputFormat.NewsInputFormat;
 import uniandes.mapRed.WCMapper;
 import uniandes.mapRed.WCMapperContarNoticias;
 import uniandes.mapRed.WCMapperPalabraEnTitulosDeNoticias;
+import uniandes.mapRed.WCMapperTituloYNoticiaConMasPalabras;
 import uniandes.mapRed.WCReducer;
 
 public class WordCounter {
@@ -31,7 +33,7 @@ public class WordCounter {
             System.exit(-1);
         }
 
-        // TODO Se agregó un parámetro más al programa para indicar el modo de
+        // TODO Se agrega un parámetro más al programa para indicar el modo de
         // ejecución
         else if (args.length < 3) {
             modo = 0;
@@ -67,6 +69,18 @@ public class WordCounter {
         Job wcJob = new Job(conf, "WordCounter Job");
         wcJob.setJarByClass(WordCounter.class);
 
+        // /////////////////////////
+        // Input Format
+        // /////////////////////////
+        // Advertencia: Hay dos clases con el mismo nombre,
+        // pero no son equivalentes.
+        // Se usa, en este caso,
+        // org.apache.hadoop.mapreduce.lib.input.TextInputFormat
+        TextInputFormat.setInputPaths(wcJob, new Path(entrada));
+        wcJob.setInputFormatClass(TextInputFormat.class);
+        
+        NewsInputFormat.setInputPaths(wcJob, new Path(entrada));
+        
         // TODO Dependiendo del modo de ejecución, cambian los parámetros de
         // configuración del programa
         switch (modo) {
@@ -83,6 +97,10 @@ public class WordCounter {
                 wcJob.setMapOutputValueClass(IntWritable.class);
                 break;
             case TITULO_Y_NOTICIA_CON_MAS_PALABRAS:
+            	wcJob.setMapperClass(WCMapperTituloYNoticiaConMasPalabras.class);
+                wcJob.setMapOutputKeyClass(Text.class);
+                wcJob.setMapOutputValueClass(IntWritable.class);
+                wcJob.setInputFormatClass(TextInputFormat.class);
                 System.out.println("Modo titulo y noticia con más palabras");
             case DEFAULT:
                 wcJob.setMapperClass(WCMapper.class);
@@ -98,15 +116,7 @@ public class WordCounter {
         wcJob.setOutputKeyClass(Text.class);
         wcJob.setOutputValueClass(IntWritable.class);
 
-        // /////////////////////////
-        // Input Format
-        // /////////////////////////
-        // Advertencia: Hay dos clases con el mismo nombre,
-        // pero no son equivalentes.
-        // Se usa, en este caso,
-        // org.apache.hadoop.mapreduce.lib.input.TextInputFormat
-        TextInputFormat.setInputPaths(wcJob, new Path(entrada));
-        wcJob.setInputFormatClass(TextInputFormat.class);
+
 
         // //////////////////
         // /Output Format
@@ -115,5 +125,6 @@ public class WordCounter {
         wcJob.setOutputFormatClass(TextOutputFormat.class);
         System.out.println(wcJob.toString());
         wcJob.waitForCompletion(true);
+        wcJob.
     }
 }
